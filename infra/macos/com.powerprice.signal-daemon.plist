@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
+  "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <!-- Identity -->
+    <key>Label</key>
+    <string>com.powerprice.signal-daemon</string>
+
+    <!-- Working directory = backend/ so .env and module paths resolve correctly -->
+    <key>WorkingDirectory</key>
+    <string>PLACEHOLDER_BACKEND_DIR</string>
+
+    <!-- Command: use the venv Python so all dependencies are available -->
+    <key>ProgramArguments</key>
+    <array>
+        <string>PLACEHOLDER_PYTHON</string>
+        <string>-m</string>
+        <string>app.runtime.signal_daemon</string>
+    </array>
+
+    <!-- Environment variables loaded from backend/.env via pydantic-settings;
+         set PATH so the venv Python is found if anything shells out -->
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>PATH</key>
+        <string>PLACEHOLDER_VENV_BIN:/usr/local/bin:/usr/bin:/bin</string>
+        <key>PYTHONUNBUFFERED</key>
+        <string>1</string>
+    </dict>
+
+    <!-- Stdout / Stderr -->
+    <key>StandardOutPath</key>
+    <string>PLACEHOLDER_DATA_DIR/daemon_launchd.out.log</string>
+    <key>StandardErrorPath</key>
+    <string>PLACEHOLDER_DATA_DIR/daemon_launchd.err.log</string>
+
+    <!-- Auto-restart if the process exits -->
+    <key>KeepAlive</key>
+    <true/>
+
+    <!-- Start immediately when the agent is loaded -->
+    <key>RunAtLoad</key>
+    <true/>
+
+    <!-- Throttle restarts: wait at least 30s between restart attempts -->
+    <key>ThrottleInterval</key>
+    <integer>30</integer>
+
+    <!-- Prevent launchd from spawning during machine sleep;
+         the daemon wakes itself via wall-clock jump detection -->
+    <key>ProcessType</key>
+    <string>Background</string>
+</dict>
+</plist>

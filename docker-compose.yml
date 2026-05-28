@@ -1,0 +1,206 @@
+version: "3.9"
+
+networks:
+  powerprice_net:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  redis_data:
+
+services:
+  # ---------------------------------------------------------------------------
+  # Database
+  # ---------------------------------------------------------------------------
+  postgres:
+    image: postgres:16-alpine
+    container_name: powerprice_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: powerprice
+      POSTGRES_USER: ppuser
+      POSTGRES_PASSWORD: pppass
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ppuser -d powerprice"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    networks:
+      - powerprice_net
+
+  # ---------------------------------------------------------------------------
+  # Cache / Message broker
+  # ---------------------------------------------------------------------------
+  redis:
+    image: redis:7-alpine
+    container_name: powerprice_redis
+    restart: unless-stopped
+    volumes:
+      - redis_data:/data
+    ports:
+      - "6380:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    networks:
+      - powerprice_net
+
+  # ---------------------------------------------------------------------------
+  # FastAPI backend
+  # ---------------------------------------------------------------------------
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: powerprice_backend
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    volumes:
+      - ./models:/app/models
+      - ./data:/app/data
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - powerprice_net
+
+  # ---------------------------------------------------------------------------
+  # Celery async worker
+  # ---------------------------------------------------------------------------
+  celery_worker:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: powerprice_celery_worker
+    restart: unless-stopped
+    command: celery -A app.jobs.celery_app worker --loglevel=info --concurrency=2
+    env_file:
+      - .env
+    volumes:
+      - ./models:/app/models
+      - ./data:/app/data
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - powerprice_net
+
+  # ---------------------------------------------------------------------------
+  # Celery beat scheduler
+  # ---------------------------------------------------------------------------
+  celery_beat:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: powerprice_celery_beat
+    restart: unless-stopped
+    command: celery -A app.jobs.celery_app beat --loglevel=info
+    env_file:
+      - .env
+    volumes:
+      - ./models:/app/models
+      - ./data:/app/data
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - powerprice_net
+
+  # ---------------------------------------------------------------------------
+  # Flower – Celery task monitor
+  # ---------------------------------------------------------------------------
+  flower:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: powerprice_flower
+    restart: unless-stopped
+    command: celery -A app.jobs.celery_app flower --port=5555
+    env_file:
+      - .env
+    ports:
+      - "5555:5555"
+    depends_on:
+      - celery_worker
+    networks:
+      - powerprice_net
+
+  # ---------------------------------------------------------------------------
+  # Signal Daemon – permanent adaptive signal loop
+  # ---------------------------------------------------------------------------
+  signal-daemon:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: powerprice_signal_daemon
+    restart: unless-stopped
+    command: python -m app.runtime.signal_daemon
+    env_file:
+      - .env
+    volumes:
+      - ./models:/app/models
+      - ./data:/app/data
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - powerprice_net
+    healthcheck:
+      test: ["CMD", "python", "-c", "import json,sys,os; f='/app/data/daemon_health.json'; d=json.load(open(f)); sys.exit(0 if d.get('running') else 1)"]
+      interval: 60s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  # ---------------------------------------------------------------------------
+  # React frontend
+  # ---------------------------------------------------------------------------
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: powerprice_frontend
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    networks:
+      - powerprice_net
+
+  # ---------------------------------------------------------------------------
+  # Nginx reverse proxy
+  # ---------------------------------------------------------------------------
+  nginx:
+    image: nginx:alpine
+    container_name: powerprice_nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./infra/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - backend
+      - frontend
+    networks:
+      - powerprice_net
