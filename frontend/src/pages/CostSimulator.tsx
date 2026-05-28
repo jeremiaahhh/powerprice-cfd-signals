@@ -19,13 +19,13 @@ interface SliderInputProps {
   color?: string
 }
 
-function SliderInput({ label, value, min, max, step, unit, onChange, description, color = '#2196f3' }: SliderInputProps) {
+function SliderInput({ label, value, min, max, step, unit, onChange, description, color = '#00d4ff' }: SliderInputProps) {
   const pct = ((value - min) / (max - min)) * 100
 
   return (
     <div className="space-y-1.5">
       <div className="flex items-center justify-between">
-        <span className="text-[10px] font-mono text-[#8892b0] uppercase tracking-wider">{label}</span>
+        <span className="text-[10px] font-mono text-[#9a9a9a] uppercase tracking-wider">{label}</span>
         <div className="flex items-center gap-1">
           <input
             type="number"
@@ -34,13 +34,13 @@ function SliderInput({ label, value, min, max, step, unit, onChange, description
             max={max}
             step={step}
             onChange={(e) => onChange(parseFloat(e.target.value) || 0)}
-            className="w-20 bg-[#0a0e1a] border border-[#1e2d4a] rounded px-2 py-0.5 text-[11px] font-mono text-[#e8eaf0] text-right focus:outline-none focus:border-[#2196f3] transition-colors"
+            className="w-20 bg-[#000000] border border-[#1f1f1f] rounded px-2 py-0.5 text-[11px] font-mono text-[#e8e8e8] text-right focus:outline-none focus:border-[#00d4ff] transition-colors"
           />
-          <span className="text-[10px] text-[#4a5568] font-mono">{unit}</span>
+          <span className="text-[10px] text-[#555555] font-mono">{unit}</span>
         </div>
       </div>
       <div className="relative">
-        <div className="h-1.5 bg-[#1e2d4a] rounded-full overflow-hidden">
+        <div className="h-1.5 bg-[#1f1f1f] rounded-full overflow-hidden">
           <div
             className="h-full rounded-full transition-all duration-150"
             style={{ width: `${pct}%`, backgroundColor: color }}
@@ -57,7 +57,7 @@ function SliderInput({ label, value, min, max, step, unit, onChange, description
         />
       </div>
       {description && (
-        <p className="text-[9px] text-[#4a5568] font-mono">{description}</p>
+        <p className="text-[9px] text-[#555555] font-mono">{description}</p>
       )}
     </div>
   )
@@ -165,23 +165,23 @@ export default function CostSimulator() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-lg font-semibold text-[#e8eaf0] font-mono">Cost Simulator</h1>
-          <p className="text-xs text-[#4a5568] font-mono mt-0.5">
+          <h1 className="text-lg font-semibold text-[#e8e8e8] font-mono">Cost Simulator</h1>
+          <p className="text-xs text-[#555555] font-mono mt-0.5">
             Adjust cost parameters and see live net edge calculation
           </p>
         </div>
         <div className="flex items-center gap-2">
           {saveSuccess && (
-            <span className="flex items-center gap-1 text-[10px] text-[#00d4aa] font-mono">
+            <span className="flex items-center gap-1 text-[10px] text-[#00ff66] font-mono">
               <CheckCircle size={11} /> Saved
             </span>
           )}
           {error && (
-            <span className="text-[10px] text-[#ffa726] font-mono">{error}</span>
+            <span className="text-[10px] text-[#ffcc00] font-mono">{error}</span>
           )}
           <button
             onClick={() => setConfig(DEFAULT_CONFIG)}
-            className="flex items-center gap-1.5 px-3 py-1.5 bg-[#141b2d] border border-[#1e2d4a] rounded text-[10px] text-[#8892b0] hover:text-[#e8eaf0] transition-all"
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-[#111111] border border-[#1f1f1f] rounded text-[10px] text-[#9a9a9a] hover:text-[#e8e8e8] transition-all"
           >
             <RefreshCw size={11} />
             Reset
@@ -189,7 +189,7 @@ export default function CostSimulator() {
           <button
             onClick={handleSave}
             disabled={saving}
-            className="flex items-center gap-1.5 px-3 py-1.5 bg-[#2196f3]/10 border border-[#2196f3]/40 rounded text-[10px] text-[#2196f3] hover:bg-[#2196f3]/20 transition-all disabled:opacity-50"
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-[#00d4ff]/10 border border-[#00d4ff]/40 rounded text-[10px] text-[#00d4ff] hover:bg-[#00d4ff]/20 transition-all disabled:opacity-50"
           >
             <Save size={11} className={clsx(saving && 'animate-spin')} />
             {saving ? 'Saving…' : 'Save Config'}
@@ -199,16 +199,16 @@ export default function CostSimulator() {
 
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-5">
         {/* Sliders */}
-        <div className="bg-[#141b2d] border border-[#1e2d4a] rounded-lg p-5 space-y-5">
+        <div className="bg-[#111111] border border-[#1f1f1f] rounded-lg p-5 space-y-5">
           <div className="flex items-center gap-2 mb-2">
-            <Calculator size={14} className="text-[#8892b0]" />
-            <h2 className="text-xs font-semibold text-[#e8eaf0] font-mono uppercase tracking-wider">
+            <Calculator size={14} className="text-[#9a9a9a]" />
+            <h2 className="text-xs font-semibold text-[#e8e8e8] font-mono uppercase tracking-wider">
               Cost Parameters
             </h2>
           </div>
 
-          <div className="border-t border-[#1e2d4a] pt-4 space-y-4">
-            <div className="text-[9px] text-[#4a5568] font-mono uppercase tracking-wider">Trading Costs</div>
+          <div className="border-t border-[#1f1f1f] pt-4 space-y-4">
+            <div className="text-[9px] text-[#555555] font-mono uppercase tracking-wider">Trading Costs</div>
             <SliderInput
               label="Avg Spread"
               value={config.avg_spread}
@@ -216,7 +216,7 @@ export default function CostSimulator() {
               unit="€/MWh"
               onChange={updateConfig('avg_spread')}
               description="Typical bid-ask spread for DE power CFD"
-              color="#ff4757"
+              color="#ff3366"
             />
             <SliderInput
               label="Slippage"
@@ -225,7 +225,7 @@ export default function CostSimulator() {
               unit="€/MWh"
               onChange={updateConfig('slippage')}
               description="Expected execution slippage at market open"
-              color="#ff4757"
+              color="#ff3366"
             />
             <SliderInput
               label="Overnight Fee"
@@ -234,7 +234,7 @@ export default function CostSimulator() {
               unit="€/MWh"
               onChange={updateConfig('overnight_fee')}
               description="Daily financing / swap cost"
-              color="#ffa726"
+              color="#ffcc00"
             />
             <SliderInput
               label="Broker Markup"
@@ -243,7 +243,7 @@ export default function CostSimulator() {
               unit="€/MWh"
               onChange={updateConfig('broker_markup')}
               description="Broker commission and markup"
-              color="#ffa726"
+              color="#ffcc00"
             />
             <SliderInput
               label="Safety Buffer"
@@ -252,12 +252,12 @@ export default function CostSimulator() {
               unit="€/MWh"
               onChange={updateConfig('safety_buffer')}
               description="Extra margin for unforeseen costs"
-              color="#9c27b0"
+              color="#ffa500"
             />
           </div>
 
-          <div className="border-t border-[#1e2d4a] pt-4 space-y-4">
-            <div className="text-[9px] text-[#4a5568] font-mono uppercase tracking-wider">Expected Return</div>
+          <div className="border-t border-[#1f1f1f] pt-4 space-y-4">
+            <div className="text-[9px] text-[#555555] font-mono uppercase tracking-wider">Expected Return</div>
             <SliderInput
               label="Expected Rebound"
               value={config.expected_rebound}
@@ -265,7 +265,7 @@ export default function CostSimulator() {
               unit="€/MWh"
               onChange={updateConfig('expected_rebound')}
               description="Estimated price recovery from negative to positive"
-              color="#00d4aa"
+              color="#00ff66"
             />
           </div>
         </div>
@@ -276,19 +276,19 @@ export default function CostSimulator() {
           <div
             className={clsx(
               'rounded-lg border-2 p-5 transition-all',
-              isPositive ? 'bg-[#00d4aa]/5 border-[#00d4aa]/40' : 'bg-[#ff4757]/5 border-[#ff4757]/40'
+              isPositive ? 'bg-[#00ff66]/5 border-[#00ff66]/40' : 'bg-[#ff3366]/5 border-[#ff3366]/40'
             )}
           >
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-[10px] font-mono text-[#4a5568] uppercase tracking-wider">
+              <h3 className="text-[10px] font-mono text-[#555555] uppercase tracking-wider">
                 Net Edge Result
               </h3>
               <div
                 className={clsx(
                   'flex items-center gap-1.5 px-2.5 py-1 rounded border text-[10px] font-mono font-semibold',
                   isPositive
-                    ? 'text-[#00d4aa] border-[#00d4aa]/40 bg-[#00d4aa]/10'
-                    : 'text-[#ff4757] border-[#ff4757]/40 bg-[#ff4757]/10'
+                    ? 'text-[#00ff66] border-[#00ff66]/40 bg-[#00ff66]/10'
+                    : 'text-[#ff3366] border-[#ff3366]/40 bg-[#ff3366]/10'
                 )}
               >
                 {isPositive ? <CheckCircle size={11} /> : <AlertTriangle size={11} />}
@@ -299,26 +299,26 @@ export default function CostSimulator() {
             {result && (
               <>
                 <div className="text-center mb-4">
-                  <div className="text-[10px] text-[#4a5568] font-mono mb-1">Net Edge After All Costs</div>
-                  <div className={clsx('text-4xl font-mono font-bold tabular-nums', isPositive ? 'text-[#00d4aa]' : 'text-[#ff4757]')}>
+                  <div className="text-[10px] text-[#555555] font-mono mb-1">Net Edge After All Costs</div>
+                  <div className={clsx('text-4xl font-mono font-bold tabular-nums', isPositive ? 'text-[#00ff66]' : 'text-[#ff3366]')}>
                     {result.net_edge > 0 ? '+' : ''}€{result.net_edge.toFixed(2)}
                   </div>
-                  <div className="text-[10px] text-[#4a5568] font-mono">per MWh</div>
+                  <div className="text-[10px] text-[#555555] font-mono">per MWh</div>
                 </div>
 
                 <div className="grid grid-cols-2 gap-3 text-[11px] font-mono">
-                  <div className="bg-[#0a0e1a]/50 rounded p-2">
-                    <div className="text-[9px] text-[#4a5568] uppercase mb-1">Expected Rebound</div>
-                    <div className="text-[#00d4aa] font-semibold">+€{config.expected_rebound.toFixed(2)}</div>
+                  <div className="bg-[#000000]/50 rounded p-2">
+                    <div className="text-[9px] text-[#555555] uppercase mb-1">Expected Rebound</div>
+                    <div className="text-[#00ff66] font-semibold">+€{config.expected_rebound.toFixed(2)}</div>
                   </div>
-                  <div className="bg-[#0a0e1a]/50 rounded p-2">
-                    <div className="text-[9px] text-[#4a5568] uppercase mb-1">Total Cost</div>
-                    <div className="text-[#ff4757] font-semibold">-€{result.total_cost.toFixed(2)}</div>
+                  <div className="bg-[#000000]/50 rounded p-2">
+                    <div className="text-[9px] text-[#555555] uppercase mb-1">Total Cost</div>
+                    <div className="text-[#ff3366] font-semibold">-€{result.total_cost.toFixed(2)}</div>
                   </div>
                 </div>
 
                 {result.rejection_reason && (
-                  <div className="mt-3 flex items-start gap-2 text-[10px] text-[#ff4757] font-mono bg-[#ff4757]/10 rounded px-3 py-2">
+                  <div className="mt-3 flex items-start gap-2 text-[10px] text-[#ff3366] font-mono bg-[#ff3366]/10 rounded px-3 py-2">
                     <AlertTriangle size={11} className="mt-0.5 flex-shrink-0" />
                     {result.rejection_reason}
                   </div>
@@ -328,21 +328,21 @@ export default function CostSimulator() {
           </div>
 
           {/* Cost breakdown visual */}
-          <div className="bg-[#141b2d] border border-[#1e2d4a] rounded-lg p-4">
-            <h3 className="text-[10px] font-mono text-[#4a5568] uppercase tracking-wider mb-4">
+          <div className="bg-[#111111] border border-[#1f1f1f] rounded-lg p-4">
+            <h3 className="text-[10px] font-mono text-[#555555] uppercase tracking-wider mb-4">
               Cost vs Rebound Breakdown
             </h3>
             <ResponsiveContainer width="100%" height={200}>
               <BarChart data={costItems} margin={{ top: 5, right: 10, left: 0, bottom: 5 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#1e2d4a" vertical={false} />
+                <CartesianGrid strokeDasharray="3 3" stroke="#1f1f1f" vertical={false} />
                 <XAxis
                   dataKey="name"
-                  tick={{ fill: '#4a5568', fontSize: 9, fontFamily: 'JetBrains Mono' }}
+                  tick={{ fill: '#555555', fontSize: 9, fontFamily: 'JetBrains Mono' }}
                   tickLine={false}
-                  axisLine={{ stroke: '#1e2d4a' }}
+                  axisLine={{ stroke: '#1f1f1f' }}
                 />
                 <YAxis
-                  tick={{ fill: '#4a5568', fontSize: 9, fontFamily: 'JetBrains Mono' }}
+                  tick={{ fill: '#555555', fontSize: 9, fontFamily: 'JetBrains Mono' }}
                   tickLine={false}
                   axisLine={false}
                   tickFormatter={(v) => `€${v}`}
@@ -350,14 +350,14 @@ export default function CostSimulator() {
                 />
                 <Tooltip
                   formatter={(v: number) => [`€${v.toFixed(2)}`, '']}
-                  contentStyle={{ background: '#141b2d', border: '1px solid #1e2d4a', borderRadius: 6, fontSize: 11, fontFamily: 'JetBrains Mono' }}
-                  labelStyle={{ color: '#8892b0' }}
+                  contentStyle={{ background: '#111111', border: '1px solid #1f1f1f', borderRadius: 6, fontSize: 11, fontFamily: 'JetBrains Mono' }}
+                  labelStyle={{ color: '#9a9a9a' }}
                 />
                 <Bar dataKey="value" radius={[3, 3, 0, 0]}>
                   {costItems.map((entry, i) => (
                     <Cell
                       key={i}
-                      fill={entry.type === 'rebound' ? '#00d4aa' : entry.name === 'Buffer' ? '#9c27b0' : entry.name === 'Overnight' || entry.name === 'Broker' ? '#ffa726' : '#ff4757'}
+                      fill={entry.type === 'rebound' ? '#00ff66' : entry.name === 'Buffer' ? '#ffa500' : entry.name === 'Overnight' || entry.name === 'Broker' ? '#ffcc00' : '#ff3366'}
                       fillOpacity={0.85}
                     />
                   ))}
@@ -367,18 +367,18 @@ export default function CostSimulator() {
           </div>
 
           {/* Break-even */}
-          <div className="bg-[#141b2d] border border-[#1e2d4a] rounded-lg px-4 py-3">
-            <div className="text-[9px] text-[#4a5568] font-mono uppercase tracking-wider mb-2">Break-Even Analysis</div>
+          <div className="bg-[#111111] border border-[#1f1f1f] rounded-lg px-4 py-3">
+            <div className="text-[9px] text-[#555555] font-mono uppercase tracking-wider mb-2">Break-Even Analysis</div>
             <div className="grid grid-cols-2 gap-3 text-[11px] font-mono">
               <div>
-                <div className="text-[9px] text-[#4a5568] mb-0.5">Min Rebound to Trade</div>
-                <div className="text-[#ffa726] font-semibold">
+                <div className="text-[9px] text-[#555555] mb-0.5">Min Rebound to Trade</div>
+                <div className="text-[#ffcc00] font-semibold">
                   {result ? `€${result.total_cost.toFixed(2)}` : '—'} / MWh
                 </div>
               </div>
               <div>
-                <div className="text-[9px] text-[#4a5568] mb-0.5">Edge / Cost Ratio</div>
-                <div className={clsx('font-semibold', isPositive ? 'text-[#00d4aa]' : 'text-[#ff4757]')}>
+                <div className="text-[9px] text-[#555555] mb-0.5">Edge / Cost Ratio</div>
+                <div className={clsx('font-semibold', isPositive ? 'text-[#00ff66]' : 'text-[#ff3366]')}>
                   {result && result.total_cost > 0
                     ? `${((result.net_edge / result.total_cost) * 100).toFixed(0)}%`
                     : '—'}

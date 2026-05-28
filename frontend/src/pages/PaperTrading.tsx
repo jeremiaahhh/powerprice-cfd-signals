@@ -14,11 +14,11 @@ import {
 import KPICard from '../components/KPICard'
 
 const ACTION_COLORS: Record<SignalAction, string> = {
-  ENTER: 'text-[#00d4aa]',
-  WATCH: 'text-[#ffa726]',
-  EXIT: 'text-[#ff4757]',
-  NO_TRADE: 'text-[#4a5568]',
-  RISK: 'text-[#ff4757]'
+  ENTER: 'text-[#00ff66]',
+  WATCH: 'text-[#ffcc00]',
+  EXIT: 'text-[#ff3366]',
+  NO_TRADE: 'text-[#555555]',
+  RISK: 'text-[#ff3366]'
 }
 
 // Generate demo data
@@ -135,26 +135,26 @@ export default function PaperTrading() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-lg font-semibold text-[#e8eaf0] font-mono">Paper Trading</h1>
-          <p className="text-xs text-[#4a5568] font-mono mt-0.5">
+          <h1 className="text-lg font-semibold text-[#e8e8e8] font-mono">Paper Trading</h1>
+          <p className="text-xs text-[#555555] font-mono mt-0.5">
             Simulated trading with live signals — no real money
           </p>
         </div>
         <div className="flex items-center gap-3">
           {lastRefresh && (
-            <span className="text-[10px] text-[#4a5568] font-mono">
+            <span className="text-[10px] text-[#555555] font-mono">
               {format(lastRefresh, 'HH:mm:ss')}
             </span>
           )}
           {error && (
-            <span className="flex items-center gap-1 text-[10px] text-[#ffa726] font-mono">
+            <span className="flex items-center gap-1 text-[10px] text-[#ffcc00] font-mono">
               <AlertTriangle size={10} /> {error}
             </span>
           )}
           <button
             onClick={load}
             disabled={loading}
-            className="flex items-center gap-1.5 px-3 py-1.5 bg-[#141b2d] border border-[#1e2d4a] rounded text-[10px] text-[#8892b0] hover:text-[#e8eaf0] hover:border-[#00d4aa]/30 transition-all disabled:opacity-50"
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-[#111111] border border-[#1f1f1f] rounded text-[10px] text-[#9a9a9a] hover:text-[#e8e8e8] hover:border-[#00ff66]/30 transition-all disabled:opacity-50"
           >
             <RefreshCw size={11} className={clsx(loading && 'animate-spin')} />
             Refresh
@@ -163,20 +163,20 @@ export default function PaperTrading() {
       </div>
 
       {/* Status + controls */}
-      <div className="bg-[#141b2d] border border-[#1e2d4a] rounded-lg p-4">
+      <div className="bg-[#111111] border border-[#1f1f1f] rounded-lg p-4">
         <div className="flex items-center justify-between flex-wrap gap-4">
           <div className="flex items-center gap-4">
             <div className={clsx(
               'flex items-center gap-2 px-4 py-2 rounded border font-mono text-sm font-semibold',
               isRunning
-                ? 'bg-[#00d4aa]/10 border-[#00d4aa]/40 text-[#00d4aa]'
-                : 'bg-[#4a5568]/10 border-[#4a5568]/30 text-[#4a5568]'
+                ? 'bg-[#00ff66]/10 border-[#00ff66]/40 text-[#00ff66]'
+                : 'bg-[#555555]/10 border-[#555555]/30 text-[#555555]'
             )}>
               <Activity size={14} className={clsx(isRunning && 'animate-pulse')} />
               {isRunning ? 'RUNNING' : 'STOPPED'}
             </div>
             {status?.started_at && isRunning && (
-              <span className="text-[10px] text-[#4a5568] font-mono">
+              <span className="text-[10px] text-[#555555] font-mono">
                 Running since {formatDistanceToNow(parseISO(status.started_at), { addSuffix: true })}
               </span>
             )}
@@ -185,7 +185,7 @@ export default function PaperTrading() {
             <button
               onClick={handleStart}
               disabled={isRunning || actionLoading}
-              className="flex items-center gap-2 px-4 py-2 bg-[#00d4aa]/10 border border-[#00d4aa]/40 rounded text-[11px] font-mono text-[#00d4aa] hover:bg-[#00d4aa]/20 transition-all disabled:opacity-40 disabled:cursor-not-allowed font-semibold"
+              className="flex items-center gap-2 px-4 py-2 bg-[#00ff66]/10 border border-[#00ff66]/40 rounded text-[11px] font-mono text-[#00ff66] hover:bg-[#00ff66]/20 transition-all disabled:opacity-40 disabled:cursor-not-allowed font-semibold"
             >
               <Play size={12} />
               Start
@@ -193,7 +193,7 @@ export default function PaperTrading() {
             <button
               onClick={handleStop}
               disabled={!isRunning || actionLoading}
-              className="flex items-center gap-2 px-4 py-2 bg-[#ff4757]/10 border border-[#ff4757]/40 rounded text-[11px] font-mono text-[#ff4757] hover:bg-[#ff4757]/20 transition-all disabled:opacity-40 disabled:cursor-not-allowed font-semibold"
+              className="flex items-center gap-2 px-4 py-2 bg-[#ff3366]/10 border border-[#ff3366]/40 rounded text-[11px] font-mono text-[#ff3366] hover:bg-[#ff3366]/20 transition-all disabled:opacity-40 disabled:cursor-not-allowed font-semibold"
             >
               <Square size={12} />
               Stop
@@ -237,19 +237,19 @@ export default function PaperTrading() {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         {/* Open positions */}
-        <div className="lg:col-span-2 bg-[#141b2d] border border-[#1e2d4a] rounded-lg overflow-hidden">
-          <div className="px-4 py-3 border-b border-[#1e2d4a] bg-[#0f1629] flex items-center justify-between">
-            <h2 className="text-[10px] font-mono text-[#4a5568] uppercase tracking-wider">Open Positions</h2>
-            <span className="text-[10px] font-mono text-[#8892b0]">
+        <div className="lg:col-span-2 bg-[#111111] border border-[#1f1f1f] rounded-lg overflow-hidden">
+          <div className="px-4 py-3 border-b border-[#1f1f1f] bg-[#0a0a0a] flex items-center justify-between">
+            <h2 className="text-[10px] font-mono text-[#555555] uppercase tracking-wider">Open Positions</h2>
+            <span className="text-[10px] font-mono text-[#9a9a9a]">
               {status?.open_positions.length ?? 0} open
             </span>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full text-xs font-mono">
               <thead>
-                <tr className="border-b border-[#1e2d4a]">
+                <tr className="border-b border-[#1f1f1f]">
                   {['Opened', 'Action', 'Entry', 'Current', 'Unrealized PnL', 'Stop', 'Target'].map(h => (
-                    <th key={h} className="px-3 py-2 text-left text-[9px] text-[#4a5568] uppercase tracking-wider font-medium">
+                    <th key={h} className="px-3 py-2 text-left text-[9px] text-[#555555] uppercase tracking-wider font-medium">
                       {h}
                     </th>
                   ))}
@@ -258,14 +258,14 @@ export default function PaperTrading() {
               <tbody>
                 {!status?.open_positions.length ? (
                   <tr>
-                    <td colSpan={7} className="px-3 py-6 text-center text-[#4a5568] text-[11px]">
+                    <td colSpan={7} className="px-3 py-6 text-center text-[#555555] text-[11px]">
                       No open positions
                     </td>
                   </tr>
                 ) : (
                   status.open_positions.map((pos) => (
-                    <tr key={pos.id} className="border-b border-[#1e2d4a]/50 hover:bg-[#0f1629] transition-colors">
-                      <td className="px-3 py-2.5 text-[#8892b0] whitespace-nowrap">
+                    <tr key={pos.id} className="border-b border-[#1f1f1f]/50 hover:bg-[#0a0a0a] transition-colors">
+                      <td className="px-3 py-2.5 text-[#9a9a9a] whitespace-nowrap">
                         {format(parseISO(pos.opened_at), 'MM-dd HH:mm')}
                       </td>
                       <td className="px-3 py-2.5">
@@ -273,17 +273,17 @@ export default function PaperTrading() {
                           {pos.action}
                         </span>
                       </td>
-                      <td className={clsx('px-3 py-2.5 tabular-nums', pos.entry_price < 0 ? 'text-[#ff4757]' : 'text-[#e8eaf0]')}>
+                      <td className={clsx('px-3 py-2.5 tabular-nums', pos.entry_price < 0 ? 'text-[#ff3366]' : 'text-[#e8e8e8]')}>
                         €{pos.entry_price.toFixed(2)}
                       </td>
-                      <td className={clsx('px-3 py-2.5 tabular-nums', pos.current_price < 0 ? 'text-[#ff4757]' : 'text-[#e8eaf0]')}>
+                      <td className={clsx('px-3 py-2.5 tabular-nums', pos.current_price < 0 ? 'text-[#ff3366]' : 'text-[#e8e8e8]')}>
                         €{pos.current_price.toFixed(2)}
                       </td>
-                      <td className={clsx('px-3 py-2.5 tabular-nums font-semibold', pos.unrealized_pnl >= 0 ? 'text-[#00d4aa]' : 'text-[#ff4757]')}>
+                      <td className={clsx('px-3 py-2.5 tabular-nums font-semibold', pos.unrealized_pnl >= 0 ? 'text-[#00ff66]' : 'text-[#ff3366]')}>
                         {pos.unrealized_pnl >= 0 ? '+' : ''}€{pos.unrealized_pnl.toFixed(2)}
                       </td>
-                      <td className="px-3 py-2.5 text-[#ff4757] tabular-nums">€{pos.stop_loss.toFixed(2)}</td>
-                      <td className="px-3 py-2.5 text-[#00d4aa] tabular-nums">€{pos.take_profit.toFixed(2)}</td>
+                      <td className="px-3 py-2.5 text-[#ff3366] tabular-nums">€{pos.stop_loss.toFixed(2)}</td>
+                      <td className="px-3 py-2.5 text-[#00ff66] tabular-nums">€{pos.take_profit.toFixed(2)}</td>
                     </tr>
                   ))
                 )}
@@ -294,24 +294,24 @@ export default function PaperTrading() {
 
         {/* Signal quality */}
         {status?.signal_quality && (
-          <div className="bg-[#141b2d] border border-[#1e2d4a] rounded-lg p-4">
-            <h2 className="text-[10px] font-mono text-[#4a5568] uppercase tracking-wider mb-4">Signal Quality</h2>
+          <div className="bg-[#111111] border border-[#1f1f1f] rounded-lg p-4">
+            <h2 className="text-[10px] font-mono text-[#555555] uppercase tracking-wider mb-4">Signal Quality</h2>
             <div className="space-y-3">
               <div className="flex justify-between items-center">
-                <span className="text-[10px] text-[#8892b0] font-mono">Total Signals</span>
-                <span className="text-[11px] text-[#e8eaf0] font-mono font-semibold">{status.signal_quality.total_signals}</span>
+                <span className="text-[10px] text-[#9a9a9a] font-mono">Total Signals</span>
+                <span className="text-[11px] text-[#e8e8e8] font-mono font-semibold">{status.signal_quality.total_signals}</span>
               </div>
               {[
-                { label: 'ENTER signals', val: status.signal_quality.enter_signals, total: status.signal_quality.total_signals, color: '#00d4aa' },
-                { label: 'WATCH signals', val: status.signal_quality.watch_signals, total: status.signal_quality.total_signals, color: '#ffa726' },
-                { label: 'NO TRADE', val: status.signal_quality.no_trade_signals, total: status.signal_quality.total_signals, color: '#4a5568' }
+                { label: 'ENTER signals', val: status.signal_quality.enter_signals, total: status.signal_quality.total_signals, color: '#00ff66' },
+                { label: 'WATCH signals', val: status.signal_quality.watch_signals, total: status.signal_quality.total_signals, color: '#ffcc00' },
+                { label: 'NO TRADE', val: status.signal_quality.no_trade_signals, total: status.signal_quality.total_signals, color: '#555555' }
               ].map(({ label, val, total, color }) => (
                 <div key={label}>
                   <div className="flex justify-between text-[10px] font-mono mb-1">
-                    <span className="text-[#8892b0]">{label}</span>
+                    <span className="text-[#9a9a9a]">{label}</span>
                     <span style={{ color }}>{val} ({((val / total) * 100).toFixed(0)}%)</span>
                   </div>
-                  <div className="h-1.5 bg-[#1e2d4a] rounded-full overflow-hidden">
+                  <div className="h-1.5 bg-[#1f1f1f] rounded-full overflow-hidden">
                     <div
                       className="h-full rounded-full"
                       style={{ width: `${(val / total) * 100}%`, backgroundColor: color }}
@@ -319,10 +319,10 @@ export default function PaperTrading() {
                   </div>
                 </div>
               ))}
-              <div className="pt-2 border-t border-[#1e2d4a]">
+              <div className="pt-2 border-t border-[#1f1f1f]">
                 <div className="flex justify-between items-center">
-                  <span className="text-[10px] text-[#8892b0] font-mono">Avg Confidence</span>
-                  <span className="text-[11px] text-[#2196f3] font-mono font-semibold">
+                  <span className="text-[10px] text-[#9a9a9a] font-mono">Avg Confidence</span>
+                  <span className="text-[11px] text-[#00d4ff] font-mono font-semibold">
                     {(status.signal_quality.avg_confidence * 100).toFixed(0)}%
                   </span>
                 </div>
@@ -333,17 +333,17 @@ export default function PaperTrading() {
       </div>
 
       {/* Trade journal */}
-      <div className="bg-[#141b2d] border border-[#1e2d4a] rounded-lg overflow-hidden">
-        <div className="px-4 py-3 border-b border-[#1e2d4a] bg-[#0f1629] flex items-center justify-between">
-          <h2 className="text-[10px] font-mono text-[#4a5568] uppercase tracking-wider">Trade Journal</h2>
-          <span className="text-[10px] font-mono text-[#8892b0]">{status?.trade_journal.length ?? 0} trades</span>
+      <div className="bg-[#111111] border border-[#1f1f1f] rounded-lg overflow-hidden">
+        <div className="px-4 py-3 border-b border-[#1f1f1f] bg-[#0a0a0a] flex items-center justify-between">
+          <h2 className="text-[10px] font-mono text-[#555555] uppercase tracking-wider">Trade Journal</h2>
+          <span className="text-[10px] font-mono text-[#9a9a9a]">{status?.trade_journal.length ?? 0} trades</span>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-xs font-mono">
             <thead>
-              <tr className="border-b border-[#1e2d4a]">
+              <tr className="border-b border-[#1f1f1f]">
                 {['Opened', 'Closed', 'Action', 'Entry', 'Exit', 'PnL', 'Confidence', 'Exit Reason'].map(h => (
-                  <th key={h} className="px-3 py-2 text-left text-[9px] text-[#4a5568] uppercase tracking-wider font-medium">
+                  <th key={h} className="px-3 py-2 text-left text-[9px] text-[#555555] uppercase tracking-wider font-medium">
                     {h}
                   </th>
                 ))}
@@ -352,17 +352,17 @@ export default function PaperTrading() {
             <tbody>
               {!status?.trade_journal.length ? (
                 <tr>
-                  <td colSpan={8} className="px-3 py-6 text-center text-[#4a5568] text-[11px]">
+                  <td colSpan={8} className="px-3 py-6 text-center text-[#555555] text-[11px]">
                     No trades recorded yet
                   </td>
                 </tr>
               ) : (
                 status.trade_journal.map((trade) => (
-                  <tr key={trade.id} className="border-b border-[#1e2d4a]/50 hover:bg-[#0f1629] transition-colors">
-                    <td className="px-3 py-2.5 text-[#8892b0] whitespace-nowrap">
+                  <tr key={trade.id} className="border-b border-[#1f1f1f]/50 hover:bg-[#0a0a0a] transition-colors">
+                    <td className="px-3 py-2.5 text-[#9a9a9a] whitespace-nowrap">
                       {format(parseISO(trade.opened_at), 'MM-dd HH:mm')}
                     </td>
-                    <td className="px-3 py-2.5 text-[#8892b0] whitespace-nowrap">
+                    <td className="px-3 py-2.5 text-[#9a9a9a] whitespace-nowrap">
                       {format(parseISO(trade.closed_at), 'MM-dd HH:mm')}
                     </td>
                     <td className="px-3 py-2.5">
@@ -370,19 +370,19 @@ export default function PaperTrading() {
                         {trade.action}
                       </span>
                     </td>
-                    <td className={clsx('px-3 py-2.5 tabular-nums', trade.entry_price < 0 ? 'text-[#ff4757]' : 'text-[#e8eaf0]')}>
+                    <td className={clsx('px-3 py-2.5 tabular-nums', trade.entry_price < 0 ? 'text-[#ff3366]' : 'text-[#e8e8e8]')}>
                       €{trade.entry_price.toFixed(2)}
                     </td>
-                    <td className={clsx('px-3 py-2.5 tabular-nums', trade.exit_price < 0 ? 'text-[#ff4757]' : 'text-[#e8eaf0]')}>
+                    <td className={clsx('px-3 py-2.5 tabular-nums', trade.exit_price < 0 ? 'text-[#ff3366]' : 'text-[#e8e8e8]')}>
                       €{trade.exit_price.toFixed(2)}
                     </td>
-                    <td className={clsx('px-3 py-2.5 tabular-nums font-semibold text-sm', trade.realized_pnl >= 0 ? 'text-[#00d4aa]' : 'text-[#ff4757]')}>
+                    <td className={clsx('px-3 py-2.5 tabular-nums font-semibold text-sm', trade.realized_pnl >= 0 ? 'text-[#00ff66]' : 'text-[#ff3366]')}>
                       {trade.realized_pnl >= 0 ? '+' : ''}€{trade.realized_pnl.toFixed(2)}
                     </td>
-                    <td className="px-3 py-2.5 text-[#8892b0] tabular-nums">
+                    <td className="px-3 py-2.5 text-[#9a9a9a] tabular-nums">
                       {(trade.signal_confidence * 100).toFixed(0)}%
                     </td>
-                    <td className="px-3 py-2.5 text-[#4a5568] max-w-[160px] truncate">
+                    <td className="px-3 py-2.5 text-[#555555] max-w-[160px] truncate">
                       {trade.exit_reason}
                     </td>
                   </tr>

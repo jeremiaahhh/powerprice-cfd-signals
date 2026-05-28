@@ -41,13 +41,13 @@ const PriceTooltip = ({ active, payload, label }: any) => {
     const lower = payload[1]?.value as number
     const upper = payload[2]?.value as number
     return (
-      <div className="bg-[#141b2d] border border-[#1e2d4a] rounded p-2.5 text-xs font-mono space-y-1">
-        <div className="text-[#8892b0]">{label}</div>
-        <div className={clsx('font-semibold', price < 0 ? 'text-[#ff4757]' : 'text-[#00d4aa]')}>
+      <div className="bg-[#111111] border border-[#1f1f1f] rounded p-2.5 text-xs font-mono space-y-1">
+        <div className="text-[#9a9a9a]">{label}</div>
+        <div className={clsx('font-semibold', price < 0 ? 'text-[#ff3366]' : 'text-[#00ff66]')}>
           Price: €{price?.toFixed(2)}
         </div>
         {lower !== undefined && upper !== undefined && (
-          <div className="text-[#4a5568] text-[10px]">
+          <div className="text-[#555555] text-[10px]">
             Range: €{lower?.toFixed(2)} – €{upper?.toFixed(2)}
           </div>
         )}
@@ -61,9 +61,9 @@ const ProbTooltip = ({ active, payload, label }: any) => {
   if (active && payload && payload.length) {
     const val = payload[0]?.value as number
     return (
-      <div className="bg-[#141b2d] border border-[#1e2d4a] rounded p-2.5 text-xs font-mono space-y-1">
-        <div className="text-[#8892b0]">{label}</div>
-        <div className={clsx('font-semibold', val > 0.5 ? 'text-[#ff4757]' : 'text-[#00d4aa]')}>
+      <div className="bg-[#111111] border border-[#1f1f1f] rounded p-2.5 text-xs font-mono space-y-1">
+        <div className="text-[#9a9a9a]">{label}</div>
+        <div className={clsx('font-semibold', val > 0.5 ? 'text-[#ff3366]' : 'text-[#00ff66]')}>
           P(Negative): {(val * 100).toFixed(0)}%
         </div>
       </div>
@@ -112,34 +112,34 @@ export default function Forecast() {
   })) ?? []
 
   const reboundPct = forecast ? (forecast.p_rebound_overall * 100).toFixed(0) : '—'
-  const reboundColor = forecast && forecast.p_rebound_overall > 0.6 ? '#00d4aa' : '#ffa726'
+  const reboundColor = forecast && forecast.p_rebound_overall > 0.6 ? '#00ff66' : '#ffcc00'
 
   return (
     <div className="space-y-5 animate-fade-in">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-lg font-semibold text-[#e8eaf0] font-mono">Price Forecast</h1>
-          <p className="text-xs text-[#4a5568] font-mono mt-0.5">
+          <h1 className="text-lg font-semibold text-[#e8e8e8] font-mono">Price Forecast</h1>
+          <p className="text-xs text-[#555555] font-mono mt-0.5">
             ML-based 6-hour ahead forecast · Updated every 60s
           </p>
         </div>
         <div className="flex items-center gap-3">
           {lastRefresh && (
-            <span className="text-[10px] text-[#4a5568] font-mono flex items-center gap-1">
+            <span className="text-[10px] text-[#555555] font-mono flex items-center gap-1">
               <Clock size={10} />
               {format(lastRefresh, 'HH:mm:ss')}
             </span>
           )}
           {error && (
-            <span className="text-[10px] text-[#ffa726] font-mono bg-[#ffa726]/10 px-2 py-0.5 rounded">
+            <span className="text-[10px] text-[#ffcc00] font-mono bg-[#ffcc00]/10 px-2 py-0.5 rounded">
               Demo
             </span>
           )}
           <button
             onClick={load}
             disabled={loading}
-            className="flex items-center gap-1.5 px-3 py-1.5 bg-[#141b2d] border border-[#1e2d4a] rounded text-[10px] text-[#8892b0] hover:text-[#e8eaf0] hover:border-[#00d4aa]/30 transition-all disabled:opacity-50"
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-[#111111] border border-[#1f1f1f] rounded text-[10px] text-[#9a9a9a] hover:text-[#e8e8e8] hover:border-[#00ff66]/30 transition-all disabled:opacity-50"
           >
             <RefreshCw size={11} className={clsx(loading && 'animate-spin')} />
             Refresh
@@ -149,80 +149,80 @@ export default function Forecast() {
 
       {/* Summary KPIs */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-        <div className="bg-[#141b2d] border border-l-2 border-[#1e2d4a] border-l-[#2196f3] rounded-lg p-3">
-          <div className="text-[9px] text-[#4a5568] font-mono uppercase tracking-wider">Expected Low</div>
-          <div className={clsx('text-xl font-mono font-semibold mt-1 tabular-nums', forecast && forecast.expected_low < 0 ? 'text-[#ff4757]' : 'text-[#e8eaf0]')}>
+        <div className="bg-[#111111] border border-l-2 border-[#1f1f1f] border-l-[#00d4ff] rounded-lg p-3">
+          <div className="text-[9px] text-[#555555] font-mono uppercase tracking-wider">Expected Low</div>
+          <div className={clsx('text-xl font-mono font-semibold mt-1 tabular-nums', forecast && forecast.expected_low < 0 ? 'text-[#ff3366]' : 'text-[#e8e8e8]')}>
             {forecast ? `€${forecast.expected_low.toFixed(1)}` : '—'}
           </div>
-          <div className="text-[9px] text-[#4a5568] font-mono mt-0.5">per MWh</div>
+          <div className="text-[9px] text-[#555555] font-mono mt-0.5">per MWh</div>
         </div>
-        <div className="bg-[#141b2d] border border-l-2 border-[#1e2d4a] border-l-[#00d4aa] rounded-lg p-3">
-          <div className="text-[9px] text-[#4a5568] font-mono uppercase tracking-wider">Expected High</div>
-          <div className="text-xl font-mono font-semibold mt-1 tabular-nums text-[#00d4aa]">
+        <div className="bg-[#111111] border border-l-2 border-[#1f1f1f] border-l-[#00ff66] rounded-lg p-3">
+          <div className="text-[9px] text-[#555555] font-mono uppercase tracking-wider">Expected High</div>
+          <div className="text-xl font-mono font-semibold mt-1 tabular-nums text-[#00ff66]">
             {forecast ? `€${forecast.expected_high.toFixed(1)}` : '—'}
           </div>
-          <div className="text-[9px] text-[#4a5568] font-mono mt-0.5">per MWh</div>
+          <div className="text-[9px] text-[#555555] font-mono mt-0.5">per MWh</div>
         </div>
-        <div className="bg-[#141b2d] border border-l-2 border-[#1e2d4a] border-l-[#ffa726] rounded-lg p-3">
-          <div className="text-[9px] text-[#4a5568] font-mono uppercase tracking-wider">P(Rebound) Overall</div>
+        <div className="bg-[#111111] border border-l-2 border-[#1f1f1f] border-l-[#ffcc00] rounded-lg p-3">
+          <div className="text-[9px] text-[#555555] font-mono uppercase tracking-wider">P(Rebound) Overall</div>
           <div className="text-xl font-mono font-semibold mt-1 tabular-nums" style={{ color: reboundColor }}>
             {reboundPct}%
           </div>
-          <div className="text-[9px] text-[#4a5568] font-mono mt-0.5">6h window</div>
+          <div className="text-[9px] text-[#555555] font-mono mt-0.5">6h window</div>
         </div>
-        <div className="bg-[#141b2d] border border-l-2 border-[#1e2d4a] border-l-[#9c27b0] rounded-lg p-3">
-          <div className="text-[9px] text-[#4a5568] font-mono uppercase tracking-wider">Horizon</div>
-          <div className="text-xl font-mono font-semibold mt-1 tabular-nums text-[#e8eaf0]">
+        <div className="bg-[#111111] border border-l-2 border-[#1f1f1f] border-l-[#ffa500] rounded-lg p-3">
+          <div className="text-[9px] text-[#555555] font-mono uppercase tracking-wider">Horizon</div>
+          <div className="text-xl font-mono font-semibold mt-1 tabular-nums text-[#e8e8e8]">
             {forecast?.horizon_hours ?? '—'}h
           </div>
-          <div className="text-[9px] text-[#4a5568] font-mono mt-0.5">forecast window</div>
+          <div className="text-[9px] text-[#555555] font-mono mt-0.5">forecast window</div>
         </div>
       </div>
 
       {/* Price forecast chart */}
-      <div className="bg-[#141b2d] border border-[#1e2d4a] rounded-lg p-4">
+      <div className="bg-[#111111] border border-[#1f1f1f] rounded-lg p-4">
         <div className="mb-4">
-          <h2 className="text-xs font-semibold text-[#e8eaf0] font-mono uppercase tracking-wider">
+          <h2 className="text-xs font-semibold text-[#e8e8e8] font-mono uppercase tracking-wider">
             Price Forecast — Next 6 Hours
           </h2>
-          <p className="text-[10px] text-[#4a5568] font-mono mt-0.5">
+          <p className="text-[10px] text-[#555555] font-mono mt-0.5">
             Shaded region = 80% confidence interval
           </p>
         </div>
 
         {loading && !forecast ? (
           <div className="h-52 flex items-center justify-center">
-            <div className="text-[#4a5568] text-xs font-mono animate-pulse">Loading forecast…</div>
+            <div className="text-[#555555] text-xs font-mono animate-pulse">Loading forecast…</div>
           </div>
         ) : (
           <ResponsiveContainer width="100%" height={240}>
             <LineChart data={priceChartData} margin={{ top: 5, right: 10, left: 0, bottom: 0 }}>
               <defs>
                 <linearGradient id="bandGrad" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#2196f3" stopOpacity={0.15} />
-                  <stop offset="100%" stopColor="#2196f3" stopOpacity={0.02} />
+                  <stop offset="0%" stopColor="#00d4ff" stopOpacity={0.15} />
+                  <stop offset="100%" stopColor="#00d4ff" stopOpacity={0.02} />
                 </linearGradient>
               </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="#1e2d4a" />
+              <CartesianGrid strokeDasharray="3 3" stroke="#1f1f1f" />
               <XAxis
                 dataKey="time"
-                tick={{ fill: '#4a5568', fontSize: 10, fontFamily: 'JetBrains Mono' }}
+                tick={{ fill: '#555555', fontSize: 10, fontFamily: 'JetBrains Mono' }}
                 tickLine={false}
-                axisLine={{ stroke: '#1e2d4a' }}
+                axisLine={{ stroke: '#1f1f1f' }}
               />
               <YAxis
-                tick={{ fill: '#4a5568', fontSize: 10, fontFamily: 'JetBrains Mono' }}
+                tick={{ fill: '#555555', fontSize: 10, fontFamily: 'JetBrains Mono' }}
                 tickLine={false}
                 axisLine={false}
                 tickFormatter={(v) => `€${v}`}
                 width={56}
               />
               <Tooltip content={<PriceTooltip />} />
-              <ReferenceLine y={0} stroke="#ff4757" strokeDasharray="4 4" strokeOpacity={0.5} label={{ value: '€0', fill: '#ff4757', fontSize: 9 }} />
+              <ReferenceLine y={0} stroke="#ff3366" strokeDasharray="4 4" strokeOpacity={0.5} label={{ value: '€0', fill: '#ff3366', fontSize: 9 }} />
               <Line
                 type="monotone"
                 dataKey="upper"
-                stroke="#2196f3"
+                stroke="#00d4ff"
                 strokeWidth={0}
                 dot={false}
                 strokeOpacity={0}
@@ -230,7 +230,7 @@ export default function Forecast() {
               <Line
                 type="monotone"
                 dataKey="lower"
-                stroke="#2196f3"
+                stroke="#00d4ff"
                 strokeWidth={0}
                 dot={false}
                 fill="url(#bandGrad)"
@@ -239,9 +239,9 @@ export default function Forecast() {
               <Line
                 type="monotone"
                 dataKey="price"
-                stroke="#2196f3"
+                stroke="#00d4ff"
                 strokeWidth={2}
-                dot={{ r: 4, fill: '#2196f3', strokeWidth: 0 }}
+                dot={{ r: 4, fill: '#00d4ff', strokeWidth: 0 }}
                 activeDot={{ r: 5 }}
               />
             </LineChart>
@@ -250,45 +250,45 @@ export default function Forecast() {
       </div>
 
       {/* Negative probability bar chart */}
-      <div className="bg-[#141b2d] border border-[#1e2d4a] rounded-lg p-4">
+      <div className="bg-[#111111] border border-[#1f1f1f] rounded-lg p-4">
         <div className="mb-4">
-          <h2 className="text-xs font-semibold text-[#e8eaf0] font-mono uppercase tracking-wider">
+          <h2 className="text-xs font-semibold text-[#e8e8e8] font-mono uppercase tracking-wider">
             Negative Price Probability by Hour
           </h2>
-          <p className="text-[10px] text-[#4a5568] font-mono mt-0.5">
+          <p className="text-[10px] text-[#555555] font-mono mt-0.5">
             Bars above 50% indicate elevated negative price risk
           </p>
         </div>
 
         {loading && !forecast ? (
           <div className="h-40 flex items-center justify-center">
-            <div className="text-[#4a5568] text-xs font-mono animate-pulse">Loading…</div>
+            <div className="text-[#555555] text-xs font-mono animate-pulse">Loading…</div>
           </div>
         ) : (
           <ResponsiveContainer width="100%" height={200}>
             <BarChart data={probChartData} margin={{ top: 5, right: 10, left: 0, bottom: 0 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#1e2d4a" vertical={false} />
+              <CartesianGrid strokeDasharray="3 3" stroke="#1f1f1f" vertical={false} />
               <XAxis
                 dataKey="time"
-                tick={{ fill: '#4a5568', fontSize: 10, fontFamily: 'JetBrains Mono' }}
+                tick={{ fill: '#555555', fontSize: 10, fontFamily: 'JetBrains Mono' }}
                 tickLine={false}
-                axisLine={{ stroke: '#1e2d4a' }}
+                axisLine={{ stroke: '#1f1f1f' }}
               />
               <YAxis
                 domain={[0, 100]}
-                tick={{ fill: '#4a5568', fontSize: 10, fontFamily: 'JetBrains Mono' }}
+                tick={{ fill: '#555555', fontSize: 10, fontFamily: 'JetBrains Mono' }}
                 tickLine={false}
                 axisLine={false}
                 tickFormatter={(v) => `${v}%`}
                 width={40}
               />
               <Tooltip content={<ProbTooltip />} />
-              <ReferenceLine y={50} stroke="#ffa726" strokeDasharray="4 4" strokeOpacity={0.6} label={{ value: '50%', fill: '#ffa726', fontSize: 9 }} />
+              <ReferenceLine y={50} stroke="#ffcc00" strokeDasharray="4 4" strokeOpacity={0.6} label={{ value: '50%', fill: '#ffcc00', fontSize: 9 }} />
               <Bar dataKey="pNeg" radius={[3, 3, 0, 0]}>
                 {probChartData.map((entry, index) => (
                   <Cell
                     key={index}
-                    fill={entry.pNeg > 50 ? '#ff4757' : entry.pNeg > 30 ? '#ffa726' : '#00d4aa'}
+                    fill={entry.pNeg > 50 ? '#ff3366' : entry.pNeg > 30 ? '#ffcc00' : '#00ff66'}
                     fillOpacity={0.8}
                   />
                 ))}
@@ -299,8 +299,8 @@ export default function Forecast() {
       </div>
 
       {/* Rebound gauge */}
-      <div className="bg-[#141b2d] border border-[#1e2d4a] rounded-lg p-4">
-        <h2 className="text-xs font-semibold text-[#e8eaf0] font-mono uppercase tracking-wider mb-4">
+      <div className="bg-[#111111] border border-[#1f1f1f] rounded-lg p-4">
+        <h2 className="text-xs font-semibold text-[#e8e8e8] font-mono uppercase tracking-wider mb-4">
           Rebound Probability Gauge
         </h2>
         <div className="flex items-center gap-6">
@@ -311,7 +311,7 @@ export default function Forecast() {
               <path
                 d="M 15 80 A 65 65 0 0 1 145 80"
                 fill="none"
-                stroke="#1e2d4a"
+                stroke="#1f1f1f"
                 strokeWidth={12}
                 strokeLinecap="round"
               />
@@ -337,7 +337,7 @@ export default function Forecast() {
               <text x="80" y="72" textAnchor="middle" fill={reboundColor} fontSize="22" fontWeight="600" fontFamily="JetBrains Mono">
                 {reboundPct}%
               </text>
-              <text x="80" y="88" textAnchor="middle" fill="#4a5568" fontSize="9" fontFamily="JetBrains Mono">
+              <text x="80" y="88" textAnchor="middle" fill="#555555" fontSize="9" fontFamily="JetBrains Mono">
                 P(REBOUND)
               </text>
             </svg>
@@ -347,9 +347,9 @@ export default function Forecast() {
           <div className="flex-1 space-y-3">
             <div className="flex items-center gap-2">
               {forecast && forecast.p_rebound_overall > 0.6 ? (
-                <TrendingUp size={16} className="text-[#00d4aa]" />
+                <TrendingUp size={16} className="text-[#00ff66]" />
               ) : (
-                <TrendingDown size={16} className="text-[#ffa726]" />
+                <TrendingDown size={16} className="text-[#ffcc00]" />
               )}
               <span className="text-sm font-mono font-semibold" style={{ color: reboundColor }}>
                 {forecast && forecast.p_rebound_overall > 0.7 ? 'Strong rebound likely'
@@ -357,17 +357,17 @@ export default function Forecast() {
                   : 'Weak rebound signal'}
               </span>
             </div>
-            <div className="space-y-1.5 text-[11px] font-mono text-[#8892b0]">
+            <div className="space-y-1.5 text-[11px] font-mono text-[#9a9a9a]">
               <div className="flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-[#00d4aa] flex-shrink-0" />
+                <span className="w-2 h-2 rounded-full bg-[#00ff66] flex-shrink-0" />
                 Above 70% = Strong ENTER signal
               </div>
               <div className="flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-[#ffa726] flex-shrink-0" />
+                <span className="w-2 h-2 rounded-full bg-[#ffcc00] flex-shrink-0" />
                 50–70% = WATCH for entry
               </div>
               <div className="flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-[#ff4757] flex-shrink-0" />
+                <span className="w-2 h-2 rounded-full bg-[#ff3366] flex-shrink-0" />
                 Below 50% = NO TRADE
               </div>
             </div>
