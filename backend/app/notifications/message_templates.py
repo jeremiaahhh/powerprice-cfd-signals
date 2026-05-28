@@ -28,9 +28,9 @@ def _pct(v: Optional[float]) -> str:
     return f"{v:.1f}%"
 
 
-def _risk_emoji(score: Optional[float]) -> str:
+def _risk_level(score: Optional[float]) -> str:
     if score is None:
-        return "❓"
+        return "UNKNOWN"
     if score < 0.30:
         return "🟢 LOW"
     if score < 0.65:
@@ -52,54 +52,54 @@ def format_signal(signal: Dict[str, Any]) -> str:
     reason = signal.get("reason", "")
     risk_warnings = signal.get("risk_warnings") or []
 
-    # Action emoji
-    emoji_map = {
-        "HIGH_CONFIDENCE_SIGNAL": "⚡",
-        "ENTER_LONG_REBOUND_SIGNAL": "📈",
-        "WATCH_LONG_REBOUND": "👁",
-        "NO_TRADE": "⏸",
-        "TAIL_RISK_BLOCKED": "🛑",
-        "GAP_RISK_BLOCKED": "⛔",
-        "EXTREME_VOLATILITY_BLOCKED": "⚠️",
-        "DATA_QUALITY_BLOCKED": "🔌",
+    # Signal-level indicator (visual UX in the message stream)
+    level_map = {
+        "HIGH_CONFIDENCE_SIGNAL": "💚",
+        "ENTER_LONG_REBOUND_SIGNAL": "🟢",
+        "WATCH_LONG_REBOUND": "🟡",
+        "NO_TRADE": "⚪",
+        "TAIL_RISK_BLOCKED": "🔴",
+        "GAP_RISK_BLOCKED": "🔴",
+        "EXTREME_VOLATILITY_BLOCKED": "🔴",
+        "DATA_QUALITY_BLOCKED": "🔵",
     }
-    emj = emoji_map.get(action, "•")
+    indicator = level_map.get(action, "•")
 
     lines = [
-        f"<b>Strompreis Signal DE-LU</b>",
-        f"",
-        f"{emj} <b>Signal: {_esc(action)}</b>",
-        f"💶 Preis: <b>{_price(price)}</b>",
+        "<b>Strompreis Signal DE-LU</b>",
+        "",
+        f"{indicator} <b>Signal: {_esc(action)}</b>",
+        f"Preis: <b>{_price(price)}</b>",
     ]
     if p_rebound is not None:
-        lines.append(f"🎯 p_rebound: <b>{p_rebound:.2f}</b>")
+        lines.append(f"p_rebound: <b>{p_rebound:.2f}</b>")
     if net_edge is not None:
-        lines.append(f"📊 Net Edge: <b>{_price(net_edge)}</b>")
-    lines.append(f"⚖️ Tail Risk: <b>{_risk_emoji(tail_risk)}</b>")
-    lines.append(f"🗂 Regime: <code>{_esc(regime)}</code>")
+        lines.append(f"Net Edge: <b>{_price(net_edge)}</b>")
+    lines.append(f"Tail Risk: <b>{_risk_level(tail_risk)}</b>")
+    lines.append(f"Regime: <code>{_esc(regime)}</code>")
     if stop is not None:
-        lines.append(f"🔻 Stop: {_price(stop)}")
+        lines.append(f"Stop: {_price(stop)}")
     if take_profit is not None:
-        lines.append(f"✅ Take Profit: {_price(take_profit)}")
+        lines.append(f"Take Profit: {_price(take_profit)}")
     if max_hold is not None:
-        lines.append(f"⏱ Max Holding: {max_hold}h")
+        lines.append(f"Max Holding: {max_hold}h")
 
     if reason:
-        lines.append(f"")
-        lines.append(f"<b>Begründung:</b>")
+        lines.append("")
+        lines.append("<b>Begründung:</b>")
         for part in reason.split(","):
             part = part.strip()
             if part:
                 lines.append(f"• {_esc(part)}")
 
     if risk_warnings:
-        lines.append(f"")
-        lines.append(f"<b>Risiko-Warnungen:</b>")
+        lines.append("")
+        lines.append("<b>Risiko-Warnungen:</b>")
         for w in risk_warnings[:5]:
-            lines.append(f"⚠️ {_esc(w)}")
+            lines.append(f"• {_esc(w)}")
 
-    lines.append(f"")
-    lines.append(f"<i>Signal only. Keine Order ausgeführt.</i>")
+    lines.append("")
+    lines.append("<i>Signal only. Keine Order ausgeführt.</i>")
     lines.append(f"<i>{datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M UTC')}</i>")
     return "\n".join(lines)
 
@@ -107,15 +107,15 @@ def format_signal(signal: Dict[str, Any]) -> str:
 def format_error_alert(error: str, context: Optional[Dict] = None) -> str:
     """Format a daemon error alert."""
     lines = [
-        f"🚨 <b>PowerPrice Daemon Fehler</b>",
-        f"",
+        "<b>PowerPrice Daemon — Fehler</b>",
+        "",
         f"<code>{_esc(error[:500])}</code>",
     ]
     if context:
         for k, v in list(context.items())[:5]:
             lines.append(f"• {_esc(k)}: {_esc(v)}")
-    lines.append(f"")
-    lines.append(f"<i>Signal only. Keine Order ausgeführt.</i>")
+    lines.append("")
+    lines.append("<i>Signal only. Keine Order ausgeführt.</i>")
     lines.append(f"<i>{datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M UTC')}</i>")
     return "\n".join(lines)
 
@@ -131,21 +131,21 @@ def format_daily_summary(summary: Dict[str, Any]) -> str:
     signal_mode = summary.get("signal_mode", "NORMAL")
 
     lines = [
-        f"📊 <b>PowerPrice Tages-Summary</b>",
-        f"",
-        f"📅 {datetime.now(timezone.utc).strftime('%Y-%m-%d')}",
-        f"",
-        f"🔢 Signale heute: <b>{signals_today}</b>",
-        f"📈 ENTER-Signale: <b>{enters}</b>",
-        f"🛑 Blockiert: <b>{blocked}</b>",
-        f"",
-        f"📉 Rolling PF (30): <b>{rolling_pf:.3f}</b>" if rolling_pf else "📉 Rolling PF: –",
-        f"🎯 Rolling Win Rate: <b>{_pct(rolling_wr)}</b>" if rolling_wr else "🎯 Rolling Win Rate: –",
-        f"",
-        f"🗂 Aktuelles Regime: <code>{_esc(regime)}</code>",
-        f"⚙️ Signal Mode: <code>{_esc(signal_mode)}</code>",
-        f"",
-        f"<i>Signal only. Keine Order ausgeführt.</i>",
+        "<b>PowerPrice Tages-Summary</b>",
+        "",
+        datetime.now(timezone.utc).strftime("%Y-%m-%d"),
+        "",
+        f"Signale heute:   <b>{signals_today}</b>",
+        f"ENTER-Signale:   <b>{enters}</b>",
+        f"Blockiert:       <b>{blocked}</b>",
+        "",
+        f"Rolling PF (30): <b>{rolling_pf:.3f}</b>" if rolling_pf else "Rolling PF (30): –",
+        f"Rolling Win Rate: <b>{_pct(rolling_wr)}</b>" if rolling_wr else "Rolling Win Rate: –",
+        "",
+        f"Aktuelles Regime: <code>{_esc(regime)}</code>",
+        f"Signal Mode:      <code>{_esc(signal_mode)}</code>",
+        "",
+        "<i>Signal only. Keine Order ausgeführt.</i>",
     ]
     return "\n".join(lines)
 
@@ -159,11 +159,11 @@ def format_retrain_report(report: Dict[str, Any]) -> str:
     new_wr = report.get("new_win_rate")
     reason = report.get("reason", "")
 
-    status = "✅ Promoviert" if promoted else "⏸ Kandidat (nicht promoviert)"
+    status = "Promoviert" if promoted else "Kandidat (nicht promoviert)"
 
     lines = [
-        f"🤖 <b>Modell Retraining Report</b>",
-        f"",
+        "<b>Modell Retraining Report</b>",
+        "",
         f"Modell: <code>{_esc(model)}</code>",
         f"Status: <b>{status}</b>",
     ]
@@ -172,10 +172,10 @@ def format_retrain_report(report: Dict[str, Any]) -> str:
     if new_wr is not None:
         lines.append(f"Neuer Win Rate: <b>{_pct(new_wr)}</b>")
     if reason:
-        lines.append(f"")
+        lines.append("")
         lines.append(f"Grund: {_esc(reason)}")
-    lines.append(f"")
-    lines.append(f"<i>Signal only. Keine Order ausgeführt.</i>")
+    lines.append("")
+    lines.append("<i>Signal only. Keine Order ausgeführt.</i>")
     lines.append(f"<i>{datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M UTC')}</i>")
     return "\n".join(lines)
 
@@ -186,19 +186,19 @@ def format_drift_alert(report: Dict[str, Any]) -> str:
     severity = report.get("severity", "MEDIUM")
     details = report.get("details", {})
 
-    sev_emoji = {"LOW": "🟡", "MEDIUM": "🟠", "HIGH": "🔴"}.get(severity, "⚠️")
+    severity_indicator = {"LOW": "🟢", "MEDIUM": "🟡", "HIGH": "🔴"}.get(severity, "⚪")
 
     lines = [
-        f"{sev_emoji} <b>Drift erkannt – {_esc(severity)}</b>",
-        f"",
+        f"{severity_indicator} <b>Drift erkannt — {_esc(severity)}</b>",
+        "",
     ]
     for dt in drift_types[:5]:
         lines.append(f"• {_esc(dt)}")
     if details:
-        lines.append(f"")
+        lines.append("")
         for k, v in list(details.items())[:5]:
             lines.append(f"  {_esc(k)}: {_esc(v)}")
-    lines.append(f"")
-    lines.append(f"<i>Retraining wird geprüft.</i>")
-    lines.append(f"<i>Signal only. Keine Order ausgeführt.</i>")
+    lines.append("")
+    lines.append("<i>Retraining wird geprüft.</i>")
+    lines.append("<i>Signal only. Keine Order ausgeführt.</i>")
     return "\n".join(lines)

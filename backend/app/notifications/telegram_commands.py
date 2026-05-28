@@ -167,7 +167,7 @@ class TelegramCommandHandler:
 
     async def _cmd_hilfe(self, args: List[str]) -> None:
         await self._reply(
-            "📋 <b>PowerPrice Befehle</b>\n\n"
+            "<b>PowerPrice — Befehle</b>\n\n"
             "/info — Vollständige Übersicht aller Befehle &amp; Funktionen\n"
             "/status — Daemon-Status &amp; aktuelles Signal\n"
             "/signal — Signal jetzt generieren\n"
@@ -183,12 +183,12 @@ class TelegramCommandHandler:
 
     async def _cmd_info(self, args: List[str]) -> None:
         await self._reply(
-            "⚡ <b>PowerPrice CFD Signals — Systemübersicht</b>\n\n"
+            "<b>PowerPrice CFD Signals — Systemübersicht</b>\n\n"
             "Deutsches Strompreis-ML-Signalsystem. Erkennt negative "
             "Preisphasen und Rebound-Chancen auf Basis von SMARD/ENTSO-E-Daten.\n\n"
 
             "━━━━━━━━━━━━━━━━━━━━━\n"
-            "📡 <b>SIGNAL-BEFEHLE</b>\n"
+            "<b>SIGNAL-BEFEHLE</b>\n"
             "━━━━━━━━━━━━━━━━━━━━━\n"
             "/signal\n"
             "  → Generiert ein Signal auf Basis aktueller Marktdaten.\n"
@@ -198,7 +198,7 @@ class TelegramCommandHandler:
             "  Zyklen, letztes Signal, nächster Lauf, Fehlerzähler.\n\n"
 
             "━━━━━━━━━━━━━━━━━━━━━\n"
-            "📊 <b>ANALYSE-BEFEHLE</b>\n"
+            "<b>ANALYSE-BEFEHLE</b>\n"
             "━━━━━━━━━━━━━━━━━━━━━\n"
             "/backtest [tage]\n"
             "  → ML-Rebound-Backtest der letzten N Tage (7–365, default 30).\n"
@@ -217,7 +217,7 @@ class TelegramCommandHandler:
             "  Zeigt Produktions- und Kandidaten-Modell.\n\n"
 
             "━━━━━━━━━━━━━━━━━━━━━\n"
-            "⚙️ <b>STEUERUNG</b>\n"
+            "<b>STEUERUNG</b>\n"
             "━━━━━━━━━━━━━━━━━━━━━\n"
             "/stop\n"
             "  → Setzt Stop-Signal. Daemon beendet aktuellen Zyklus\n"
@@ -227,7 +227,7 @@ class TelegramCommandHandler:
             "  Start (oder LaunchAgent-Neustart) normal weiter.\n\n"
 
             "━━━━━━━━━━━━━━━━━━━━━\n"
-            "🤖 <b>ML-MODELLE</b>\n"
+            "<b>ML-MODELLE</b>\n"
             "━━━━━━━━━━━━━━━━━━━━━\n"
             "• <b>NegativePriceClassifier</b> — erkennt negative Preisphasen (AUC 0.97)\n"
             "• <b>ReboundClassifier</b> — schätzt Rebound-Wahrscheinlichkeit (AUC 0.98)\n"
@@ -235,7 +235,7 @@ class TelegramCommandHandler:
             "Automatisches Retraining alle 24h oder bei Drift-Erkennung.\n\n"
 
             "━━━━━━━━━━━━━━━━━━━━━\n"
-            "🚦 <b>SIGNAL-TYPEN</b>\n"
+            "<b>SIGNAL-TYPEN</b>\n"
             "━━━━━━━━━━━━━━━━━━━━━\n"
             "💚 HIGH_CONFIDENCE_SIGNAL — p_rebound ≥ 0.85, Preis negativ\n"
             "🟢 ENTER_LONG_REBOUND_SIGNAL — p_rebound ≥ 0.70, Net Edge ≥ 30\n"
@@ -372,7 +372,7 @@ class TelegramCommandHandler:
         ret = _fmt_float(metrics.get("total_return_pct"))
 
         await self._reply(
-            f"📊 <b>Backtest ML-Rebound — {days} Tage</b>\n\n"
+            f"<b>Backtest ML-Rebound — {days} Tage</b>\n\n"
             f"Sharpe Ratio:    <b>{sharpe}</b>\n"
             f"Profit Factor:   <b>{pf}</b>\n"
             f"Win Rate:        <b>{wr}%</b>\n"
@@ -478,7 +478,7 @@ class TelegramCommandHandler:
                 f"  Trainiert:    {_h(trained)}"
             )
 
-        lines = ["🤖 <b>Modell-Registry</b>", ""]
+        lines = ["<b>Modell-Registry</b>", ""]
         lines.append(_model_block("Produktion", prod))
         if cand:
             lines.append("")
