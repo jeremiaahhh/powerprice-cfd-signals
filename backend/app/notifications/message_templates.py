@@ -32,10 +32,10 @@ def _risk_level(score: Optional[float]) -> str:
     if score is None:
         return "UNKNOWN"
     if score < 0.30:
-        return "🟢 LOW"
+        return "LOW"
     if score < 0.65:
-        return "🟡 MEDIUM"
-    return "🔴 HIGH"
+        return "MEDIUM"
+    return "HIGH"
 
 
 def format_signal(signal: Dict[str, Any]) -> str:
@@ -52,23 +52,10 @@ def format_signal(signal: Dict[str, Any]) -> str:
     reason = signal.get("reason", "")
     risk_warnings = signal.get("risk_warnings") or []
 
-    # Signal-level indicator (visual UX in the message stream)
-    level_map = {
-        "HIGH_CONFIDENCE_SIGNAL": "💚",
-        "ENTER_LONG_REBOUND_SIGNAL": "🟢",
-        "WATCH_LONG_REBOUND": "🟡",
-        "NO_TRADE": "⚪",
-        "TAIL_RISK_BLOCKED": "🔴",
-        "GAP_RISK_BLOCKED": "🔴",
-        "EXTREME_VOLATILITY_BLOCKED": "🔴",
-        "DATA_QUALITY_BLOCKED": "🔵",
-    }
-    indicator = level_map.get(action, "•")
-
     lines = [
         "<b>Strompreis Signal DE-LU</b>",
         "",
-        f"{indicator} <b>Signal: {_esc(action)}</b>",
+        f"<b>Signal: {_esc(action)}</b>",
         f"Preis: <b>{_price(price)}</b>",
     ]
     if p_rebound is not None:
@@ -90,13 +77,13 @@ def format_signal(signal: Dict[str, Any]) -> str:
         for part in reason.split(","):
             part = part.strip()
             if part:
-                lines.append(f"• {_esc(part)}")
+                lines.append(f"- {_esc(part)}")
 
     if risk_warnings:
         lines.append("")
         lines.append("<b>Risiko-Warnungen:</b>")
         for w in risk_warnings[:5]:
-            lines.append(f"• {_esc(w)}")
+            lines.append(f"- {_esc(w)}")
 
     lines.append("")
     lines.append("<i>Signal only. Keine Order ausgeführt.</i>")
@@ -113,7 +100,7 @@ def format_error_alert(error: str, context: Optional[Dict] = None) -> str:
     ]
     if context:
         for k, v in list(context.items())[:5]:
-            lines.append(f"• {_esc(k)}: {_esc(v)}")
+            lines.append(f"- {_esc(k)}: {_esc(v)}")
     lines.append("")
     lines.append("<i>Signal only. Keine Order ausgeführt.</i>")
     lines.append(f"<i>{datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M UTC')}</i>")
@@ -135,11 +122,11 @@ def format_daily_summary(summary: Dict[str, Any]) -> str:
         "",
         datetime.now(timezone.utc).strftime("%Y-%m-%d"),
         "",
-        f"Signale heute:   <b>{signals_today}</b>",
-        f"ENTER-Signale:   <b>{enters}</b>",
-        f"Blockiert:       <b>{blocked}</b>",
+        f"Signale heute:    <b>{signals_today}</b>",
+        f"ENTER-Signale:    <b>{enters}</b>",
+        f"Blockiert:        <b>{blocked}</b>",
         "",
-        f"Rolling PF (30): <b>{rolling_pf:.3f}</b>" if rolling_pf else "Rolling PF (30): –",
+        f"Rolling PF (30):  <b>{rolling_pf:.3f}</b>" if rolling_pf else "Rolling PF (30):  –",
         f"Rolling Win Rate: <b>{_pct(rolling_wr)}</b>" if rolling_wr else "Rolling Win Rate: –",
         "",
         f"Aktuelles Regime: <code>{_esc(regime)}</code>",
@@ -186,14 +173,12 @@ def format_drift_alert(report: Dict[str, Any]) -> str:
     severity = report.get("severity", "MEDIUM")
     details = report.get("details", {})
 
-    severity_indicator = {"LOW": "🟢", "MEDIUM": "🟡", "HIGH": "🔴"}.get(severity, "⚪")
-
     lines = [
-        f"{severity_indicator} <b>Drift erkannt — {_esc(severity)}</b>",
+        f"<b>Drift erkannt — Severity: {_esc(severity)}</b>",
         "",
     ]
     for dt in drift_types[:5]:
-        lines.append(f"• {_esc(dt)}")
+        lines.append(f"- {_esc(dt)}")
     if details:
         lines.append("")
         for k, v in list(details.items())[:5]:

@@ -153,7 +153,7 @@ class TelegramCommandHandler:
             except Exception as exc:
                 logger.error("Command /%s failed: %s", cmd, exc)
                 await self._reply(
-                    f"⚠️ <b>Fehler bei /{_h(cmd)}</b>\n<code>{_h(str(exc)[:300])}</code>"
+                    f"<b>Fehler bei /{_h(cmd)}</b>\n<code>{_h(str(exc)[:300])}</code>"
                 )
         else:
             await self._reply(
@@ -237,13 +237,13 @@ class TelegramCommandHandler:
             "━━━━━━━━━━━━━━━━━━━━━\n"
             "<b>SIGNAL-TYPEN</b>\n"
             "━━━━━━━━━━━━━━━━━━━━━\n"
-            "💚 HIGH_CONFIDENCE_SIGNAL — p_rebound ≥ 0.85, Preis negativ\n"
-            "🟢 ENTER_LONG_REBOUND_SIGNAL — p_rebound ≥ 0.70, Net Edge ≥ 30\n"
-            "🟡 WATCH_LONG_REBOUND — p_rebound ≥ 0.55 (beobachten)\n"
-            "⚪ NO_TRADE — kein Setup\n"
-            "🔴 TAIL_RISK_BLOCKED — Tail-Risk zu hoch\n"
-            "🔴 GAP_RISK_BLOCKED — Gap-Risk &gt; 0.80\n"
-            "🔵 DATA_QUALITY_BLOCKED — Datenlücken &gt; 20%\n\n"
+            "HIGH_CONFIDENCE_SIGNAL — p_rebound ≥ 0.85, Preis negativ\n"
+            "ENTER_LONG_REBOUND_SIGNAL — p_rebound ≥ 0.70, Net Edge ≥ 30\n"
+            "WATCH_LONG_REBOUND — p_rebound ≥ 0.55 (beobachten)\n"
+            "NO_TRADE — kein Setup\n"
+            "TAIL_RISK_BLOCKED — Tail-Risk zu hoch\n"
+            "GAP_RISK_BLOCKED — Gap-Risk &gt; 0.80\n"
+            "DATA_QUALITY_BLOCKED — Datenlücken &gt; 20%\n\n"
 
             f"<i>{_DISCLAIMER}</i>"
         )
@@ -255,11 +255,11 @@ class TelegramCommandHandler:
                 r = await c.get(f"{_API_BASE}/daemon/status")
                 s = r.json()
         except Exception as exc:
-            await self._reply(f"⚠️ Status nicht abrufbar: {_h(str(exc))}")
+            await self._reply(f"Status nicht abrufbar: {_h(str(exc))}")
             return
 
         running = s.get("running", False)
-        icon = "🟢" if running else "🔴"
+        state = "RUNNING" if running else "STOPPED"
         last_signal = s.get("last_signal") or "—"
         mode = s.get("signal_mode") or "—"
         cycle = s.get("cycle_count") or 0
@@ -275,7 +275,7 @@ class TelegramCommandHandler:
                 return ts[:16] if ts else "—"
 
         await self._reply(
-            f"{icon} <b>Daemon-Status</b>\n\n"
+            f"<b>Daemon-Status: {state}</b>\n\n"
             f"Läuft: <b>{'Ja' if running else 'Nein'}</b>\n"
             f"Modus: <code>{_h(mode)}</code>\n"
             f"Zyklen: {cycle}\n"
@@ -287,14 +287,14 @@ class TelegramCommandHandler:
         )
 
     async def _cmd_signal(self, args: List[str]) -> None:
-        await self._reply("⏳ Generiere Signal…")
+        await self._reply("Generiere Signal…")
         try:
             import httpx
             async with httpx.AsyncClient(timeout=20.0) as c:
                 r = await c.get(f"{_API_BASE}/cfd/signal")
                 sig = r.json()
         except Exception as exc:
-            await self._reply(f"⚠️ Signal-Generierung fehlgeschlagen: {_h(str(exc))}")
+            await self._reply(f"Signal-Generierung fehlgeschlagen: {_h(str(exc))}")
             return
 
         action = sig.get("action") or "—"
@@ -303,19 +303,8 @@ class TelegramCommandHandler:
         net_edge = sig.get("net_edge")
         reason = sig.get("reason") or ""
 
-        icons = {
-            "ENTER_LONG_REBOUND_SIGNAL": "🟢",
-            "HIGH_CONFIDENCE_SIGNAL": "💚",
-            "WATCH_LONG_REBOUND": "🟡",
-            "NO_TRADE": "⚪",
-            "DATA_QUALITY_BLOCKED": "🔵",
-            "TAIL_RISK_BLOCKED": "🔴",
-            "GAP_RISK_BLOCKED": "🔴",
-        }
-        icon = icons.get(action, "⚪")
-
         lines = [
-            f"{icon} <b>Signal: {_h(action)}</b>",
+            f"<b>Signal: {_h(action)}</b>",
             "",
             f"Preis: <b>{_fmt_float(price)} EUR/MWh</b>" if price is not None else "Preis: —",
         ]
@@ -337,7 +326,7 @@ class TelegramCommandHandler:
             except ValueError:
                 pass
 
-        await self._reply(f"⏳ Starte ML-Backtest ({days} Tage)…")
+        await self._reply(f"Starte ML-Backtest ({days} Tage)…")
 
         try:
             import httpx
@@ -353,11 +342,11 @@ class TelegramCommandHandler:
             async with httpx.AsyncClient(timeout=120.0) as c:
                 r = await c.post(f"{_API_BASE}/backtest/run", json=payload)
                 if r.status_code != 200:
-                    await self._reply(f"⚠️ Backtest-Fehler: HTTP {r.status_code}\n<code>{_h(r.text[:300])}</code>")
+                    await self._reply(f"Backtest-Fehler: HTTP {r.status_code}\n<code>{_h(r.text[:300])}</code>")
                     return
                 result = r.json()
         except Exception as exc:
-            await self._reply(f"⚠️ Backtest fehlgeschlagen: {_h(str(exc))}")
+            await self._reply(f"Backtest fehlgeschlagen: {_h(str(exc))}")
             return
 
         metrics = result.get("metrics") or result
@@ -392,7 +381,7 @@ class TelegramCommandHandler:
                 r = await c.get(f"{_API_BASE}/adaptation/rolling-performance")
                 perf = r.json()
         except Exception as exc:
-            await self._reply(f"⚠️ Performance nicht abrufbar: {_h(str(exc))}")
+            await self._reply(f"Performance nicht abrufbar: {_h(str(exc))}")
             return
 
         pf = _fmt_float(perf.get("rolling_pf"))
@@ -401,10 +390,8 @@ class TelegramCommandHandler:
         mode = perf.get("signal_mode") or "—"
         window = perf.get("window_days") or 30
 
-        icon = "🟢" if (perf.get("rolling_pf") or 0) >= 1.0 else "🔴"
-
         await self._reply(
-            f"{icon} <b>Rolling-Performance ({window}d)</b>\n\n"
+            f"<b>Rolling-Performance ({window}d)</b>\n\n"
             f"Profit Factor:  <b>{pf}</b>\n"
             f"Win Rate:       <b>{wr}%</b>\n"
             f"Trades (Shadow): {n}\n"
@@ -419,7 +406,7 @@ class TelegramCommandHandler:
                 r = await c.get(f"{_API_BASE}/adaptation/drift-report")
                 drift = r.json()
         except Exception as exc:
-            await self._reply(f"⚠️ Drift-Report nicht abrufbar: {_h(str(exc))}")
+            await self._reply(f"Drift-Report nicht abrufbar: {_h(str(exc))}")
             return
 
         has_drift = drift.get("has_drift", False)
@@ -427,11 +414,9 @@ class TelegramCommandHandler:
         drift_types = drift.get("drift_types") or []
         checked_at = drift.get("checked_at") or ""
 
-        icon = {"LOW": "🟢", "MEDIUM": "🟡", "HIGH": "🔴"}.get(severity, "⚪")
-
         lines = [
-            f"{icon} <b>Drift-Report</b>",
-            f"",
+            "<b>Drift-Report</b>",
+            "",
             f"Drift erkannt: {'Ja' if has_drift else 'Nein'}",
             f"Schweregrad: <b>{_h(severity)}</b>",
         ]
@@ -454,7 +439,7 @@ class TelegramCommandHandler:
                 r = await c.get(f"{_API_BASE}/adaptation/model-registry")
                 reg = r.json()
         except Exception as exc:
-            await self._reply(f"⚠️ Modell-Registry nicht abrufbar: {_h(str(exc))}")
+            await self._reply(f"Modell-Registry nicht abrufbar: {_h(str(exc))}")
             return
 
         prod = reg.get("production") or {}
@@ -493,11 +478,11 @@ class TelegramCommandHandler:
             async with httpx.AsyncClient(timeout=8.0) as c:
                 r = await c.post(f"{_API_BASE}/daemon/stop")
                 if r.status_code == 200:
-                    await self._reply("🔴 <b>Daemon wird angehalten.</b>\n\n<i>Stop-Signal gesetzt. Aktueller Zyklus wird abgeschlossen.</i>")
+                    await self._reply("<b>Daemon wird angehalten.</b>\n\n<i>Stop-Signal gesetzt. Aktueller Zyklus wird abgeschlossen.</i>")
                 else:
-                    await self._reply(f"⚠️ Stop fehlgeschlagen: HTTP {r.status_code}")
+                    await self._reply(f"Stop fehlgeschlagen: HTTP {r.status_code}")
         except Exception as exc:
-            await self._reply(f"⚠️ Stop fehlgeschlagen: {_h(str(exc))}")
+            await self._reply(f"Stop fehlgeschlagen: {_h(str(exc))}")
 
     async def _cmd_start(self, args: List[str]) -> None:
         try:
@@ -505,8 +490,8 @@ class TelegramCommandHandler:
             async with httpx.AsyncClient(timeout=8.0) as c:
                 r = await c.post(f"{_API_BASE}/daemon/start")
                 if r.status_code == 200:
-                    await self._reply("🟢 <b>Daemon-Stop-Signal entfernt.</b>\n\n<i>Der Daemon läuft weiter oder wird beim nächsten Start normal beginnen.</i>")
+                    await self._reply("<b>Daemon-Stop-Signal entfernt.</b>\n\n<i>Der Daemon läuft weiter oder wird beim nächsten Start normal beginnen.</i>")
                 else:
-                    await self._reply(f"⚠️ Start fehlgeschlagen: HTTP {r.status_code}")
+                    await self._reply(f"Start fehlgeschlagen: HTTP {r.status_code}")
         except Exception as exc:
-            await self._reply(f"⚠️ Start fehlgeschlagen: {_h(str(exc))}")
+            await self._reply(f"Start fehlgeschlagen: {_h(str(exc))}")

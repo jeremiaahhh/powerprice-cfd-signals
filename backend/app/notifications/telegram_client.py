@@ -70,7 +70,7 @@ class TelegramClient:
     async def test_connection(self) -> bool:
         """Send a test ping message. Returns True if successful."""
         return await self.send_html(
-            "🔌 <b>PowerPrice Signal Platform</b>\n"
+            "<b>PowerPrice Signal Platform</b>\n"
             "Telegram-Verbindung erfolgreich eingerichtet.\n"
             "<i>Signal only. Keine Order ausgeführt.</i>"
         )
