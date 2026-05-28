@@ -21,6 +21,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 This software is signal-only research code. It does not connect to any
-brokerage, does not execute trades, and does not manage funds. CFD trading
+brokerage, does not execute trades, and does not manage funds. Futures trading
 is leveraged and can result in losses exceeding deposits. Nothing in this
 repository constitutes financial advice.

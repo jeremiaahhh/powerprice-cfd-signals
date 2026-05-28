@@ -14,7 +14,7 @@
 
 ## 1. System Overview
 
-PowerPrice Futures Signals is a research platform that applies supervised machine learning to European electricity market data to produce directional trading signals on power-price CFDs. The system is composed of five logical layers:
+PowerPrice Futures Signals is a research platform that applies supervised machine learning to European electricity market data to produce directional trading signals on Futures. The system is composed of five logical layers:
 
 | Layer | Responsibility |
 |---|---|
@@ -225,7 +225,7 @@ total_spread_cost = FUTURES_SPREAD_EUR_MWH  (per lot)
 
 **Overnight financing charge**
 
-CFDs carry a daily financing charge proportional to the notional value held overnight:
+Futures carry a daily financing charge proportional to the notional value held overnight:
 
 ```
 daily_financing_rate = FUTURES_FINANCING_RATE_PA / 365

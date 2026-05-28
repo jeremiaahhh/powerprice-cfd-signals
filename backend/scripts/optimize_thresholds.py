@@ -106,7 +106,7 @@ p_neg_arr    = preds["p_negative"].values.astype(float)
 p_reb_arr    = preds["p_rebound"].values.astype(float)
 pred_p_arr   = preds["predicted_price"].values.astype(float)
 
-# Futures cost constants (mirrors CFDCostModel defaults)
+# Futures cost constants (mirrors FuturesCostModel defaults)
 _SPREAD      = 5.0   # EUR/MWh round-trip
 _SLIPPAGE    = 3.0
 _MARKUP      = 1.0

@@ -16,7 +16,7 @@ import pandas as pd
 import numpy as np
 
 from app.signals.signal_engine import SignalEngine
-from app.futures.cost_model import CFDCostModel
+from app.futures.cost_model import FuturesCostModel
 from app.ml.negative_price_classifier import NegativePriceClassifier
 from app.ml.rebound_classifier import ReboundClassifier
 from app.ml.price_regression import PriceRegressionModel
@@ -103,7 +103,7 @@ print(f"Predicted price (next period):       {predicted_price:.2f} EUR/MWh")
 # ---------------------------------------------------------------------------
 
 current_price = float(latest["price_eur_mwh"])
-cost_model = CFDCostModel()
+cost_model = FuturesCostModel()
 
 if current_price < 0:
     expected_rebound = max(0.0, predicted_price - current_price)
@@ -113,7 +113,7 @@ if current_price < 0:
         is_weekend=bool(latest["is_weekend"]),
         notional_price_eur_mwh=abs(current_price),
     )
-    print(f"\nCFD Edge (current price IS negative):")
+    print(f"\nFutures Edge (current price IS negative):")
     print(f"  Expected rebound:     {expected_rebound:.2f} EUR/MWh")
     print(f"  Gross edge:           {cost_result.gross_edge:.2f} EUR/MWh")
     print(f"  Total Futures costs:      {cost_result.total_cost:.2f} EUR/MWh")

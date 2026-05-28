@@ -15,7 +15,7 @@ import pandas as pd
 import numpy as np
 
 from app.backtest.backtester import Backtester
-from app.futures.cost_model import CFDCostModel
+from app.futures.cost_model import FuturesCostModel
 from app.ml.negative_price_classifier import NegativePriceClassifier
 from app.ml.rebound_classifier import ReboundClassifier
 from app.ml.price_regression import PriceRegressionModel
@@ -122,7 +122,7 @@ print(f"Predictions generated for {valid_mask.sum()} rows (warmup={len(df) - val
 # Run Naive strategy backtest
 # ---------------------------------------------------------------------------
 
-cost_model = CFDCostModel()
+cost_model = FuturesCostModel()
 backtester = Backtester(cost_model=cost_model)
 
 print("\n" + "="*60)
